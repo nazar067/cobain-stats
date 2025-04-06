@@ -1,8 +1,14 @@
 using CobainStats.Models;
+using DotNetEnv;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+Env.Load();
+
+var telegramToken = Environment.GetEnvironmentVariable("API_TOKEN");
+builder.Configuration["Telegram:BotToken"] = telegramToken;
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

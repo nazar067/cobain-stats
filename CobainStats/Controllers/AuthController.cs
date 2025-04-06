@@ -9,20 +9,20 @@ namespace CobainStats.Controllers
 {
     public class AuthController: Controller
     {
-        private const string TelegramBotToken = "7731702375:AAGh7QiVVOqWzn2W_ApYVSO68V04EdpYL1g";
+        private readonly string _botToken;
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
-
-        public AuthController(UserManager<User> userManager, SignInManager<User> signInManager)
+        public AuthController(UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration config)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _botToken = config["Telegram:BotToken"];
         }
 
         [HttpGet]
         public async Task<IActionResult> TelegramCallback([FromQuery] TelegramAuth model)
         {
-            if (!IsValidTelegramAuth(model, TelegramBotToken))
+            if (!IsValidTelegramAuth(model, _botToken))
                 return Unauthorized("Invalid Telegram auth data");
 
             var user = await _userManager.Users.FirstOrDefaultAsync(u => u.TelegramId == model.Id);
