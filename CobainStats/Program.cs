@@ -13,7 +13,7 @@ var telegramUsername = Environment.GetEnvironmentVariable("BOT_USERNAME");
 builder.Configuration["Telegram:BotToken"] = telegramToken;
 builder.Configuration["Telegram:BotUsername"] = telegramUsername;
 
-var botService = new BotService(telegramToken);
+var botService = new BotService(telegramToken!);
 botService.Start();
 
 // Add services to the container.
