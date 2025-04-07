@@ -22,6 +22,7 @@ namespace CobainStats.Controllers
         [HttpGet]
         public async Task<IActionResult> TelegramCallback([FromQuery] TelegramAuth model)
         {
+            Console.WriteLine("TelegramCallback");
             if (!IsValidTelegramAuth(model, _botToken))
                 return Unauthorized("Invalid Telegram auth data");
 
@@ -46,12 +47,13 @@ namespace CobainStats.Controllers
 
         private static bool IsValidTelegramAuth(TelegramAuth model, string botToken)
         {
+            Console.WriteLine("IsValidTelegramAuth");
             var data = new SortedDictionary<string, string>
-        {
-            { "auth_date", model.AuthDate.ToString() },
-            { "first_name", model.FirstName },
-            { "id", model.Id.ToString() }
-        };
+            {
+                { "auth_date", model.AuthDate.ToString() },
+                { "first_name", model.FirstName },
+                { "id", model.Id.ToString() }
+            };
 
             if (!string.IsNullOrEmpty(model.Username))
                 data["username"] = model.Username;
@@ -64,5 +66,30 @@ namespace CobainStats.Controllers
 
             return hashHex == model.Hash.ToLower();
         }
+        [HttpGet]
+        public async Task<IActionResult> TelegramLoginCallback(string token, long id)
+        {
+            Console.WriteLine("TelegramLoginCallback");
+            if (!LoginController.ValidateToken(token, out var returnUrl))
+                return BadRequest("Token invalid or expired");
+
+            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.TelegramId == id);
+            if (user == null)
+            {
+                user = new User
+                {
+                    TelegramId = id,
+                    UserName = $"tg_{id}",
+                    FirstName = "TelegramUser"
+                };
+                await _userManager.CreateAsync(user);
+            }
+
+            await _signInManager.SignInAsync(user, isPersistent: true);
+            LoginController.ConfirmedLogins.Add(token);
+
+            return Redirect(returnUrl);
+        }
+
     }
 }

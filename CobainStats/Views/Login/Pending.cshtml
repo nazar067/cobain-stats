@@ -1,0 +1,16 @@
+﻿@model string
+
+<h2>Ожидаем подтверждения входа через Telegram...</h2>
+<p>Если Telegram не открылся — <a href="https://t.me/cobainstats_bot?start=login_@Model" target="_blank">нажмите сюда</a>.</p>
+
+<script>
+    const token = '@Model';
+    const interval = setInterval(async () => {
+        const res = await fetch(`/Login/CheckLogin?token=${token}`);
+        if (res.ok) {
+            const url = await res.text();
+            clearInterval(interval);
+            window.location.href = url;
+        }
+    }, 2000);
+</script>
