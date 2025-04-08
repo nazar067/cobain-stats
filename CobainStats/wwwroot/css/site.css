@@ -29,3 +29,28 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
+
+body.light-theme {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+body.dark-theme {
+    background-color: #121212;
+    color: #ffffff;
+}
+
+body.dark-theme .navbar {
+    background-color: #1e1e1e !important;
+    color: white;
+}
+
+body.dark-theme a,
+body.dark-theme .nav-link {
+    color: #bbbbbb !important;
+}
+
+body.dark-theme .footer {
+    background-color: #1e1e1e;
+    color: #888;
+}
